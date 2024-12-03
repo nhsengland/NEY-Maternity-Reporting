@@ -7,26 +7,12 @@ output:
     toc: no
     toc_float: yes
     toc_collapsed: yes
-    css:
-      !expr paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/css/styles.css", sep="")
----
-
-```{r showHeader, message=FALSE, warning=FALSE, echo=FALSE}
-
-htmltools::includeCSS(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/layout.css", sep=""))
-htmltools::includeScript(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/title.js", sep=""))
-
-htmltools::includeHTML(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/headerUTF8.html", sep=""))
-htmltools::includeHTML(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/restrictedNHSFooterMaternityUTF8.html", sep=""))
-
-```
 
 ```{r child = if (FALSE) c("Intro Narrative - NENC.Rmd")} 
 ```
 
 ```{r child = if (TRUE) c("Intro Narrative - All.Rmd")}
 ```
-
 
 ###  Summary Table
 
