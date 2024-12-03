@@ -1,0 +1,150 @@
+---
+title: "`r ICB_Name`: Key Maternity Metrics Analysis (2024/25 Q1)"
+author: "NHS England - PAT North East and Yorkshire"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document: 
+    toc: no
+    toc_float: yes
+    toc_collapsed: yes
+    css:
+      !expr paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/css/styles.css", sep="")
+---
+
+```{r showHeader, message=FALSE, warning=FALSE, echo=FALSE}
+
+htmltools::includeCSS(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/layout.css", sep=""))
+htmltools::includeScript(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/title.js", sep=""))
+
+htmltools::includeHTML(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/headerUTF8.html", sep=""))
+htmltools::includeHTML(paste("C:/Users/", Sys.getenv("USERNAME"), "/OneDrive - NHS/North East and Yorkshire/Software/RStudio/CSS Development/V2/includes/blocks/restrictedNHSFooterMaternityUTF8.html", sep=""))
+
+```
+
+```{r child = if (FALSE) c("Intro Narrative - NENC.Rmd")} 
+```
+
+```{r child = if (TRUE) c("Intro Narrative - All.Rmd")}
+```
+
+
+###  Summary Table
+
+#### Overview
+The below table summarises performance for trusts in the ICB. Metrics are listed on the first left-hand column, with the next three columns then providing further information on the following areas:
+
+• Unit of Measurement: States whether a metric is presented as a percentage or rate per 1,000 maternities.
+
+• Direction Required: States whether a higher value is considered better for a metric (e.g. Continuity of carer), a lower value is considered better (e.g. 3rd or 4th degree tears) or if this judgement cannot be made (e.g. the % of births that are induced). Note that the directions required have been set by the national Maternity Transformation Programme team.
+
+• Three months to: States the time period covered by a metric. All metrics cover a 3 month period, with the exception of stillbirths where a rolling annual figure is presented. For metrics where MSDS data is published on a monthly basis we have aggregated together 3 months of data, and highlighted these using asterisks. For both Smoking at Delivery and PPH >= 1500ml, MSDS reports on the previous month/rolling 3 months as opposed to the current reporting month. For this reason, there is a one month lag in the time period for these two metrics.
+
+The following columns then present values for England, the ICB as a whole, and each of the trusts within the ICB.
+
+It is possible to copy all of the information in the table via the 'Copy' button below (highlighted in blue) and to also export it directly into Excel via the 'CSV' button. The 'Column visibility' button allows the user to toggle on which columns from the table are presented.
+
+#### Outlier Highlighting
+The table uses colouring to highlight trusts who are outliers at an England-level for a specific metric. The following colours are used:
+
+• <span style="color:#a3acb9;">**Grey**</span>: For metrics where it cannot be confidently stated if a higher or lower value is better, outliers are highlighted in grey.
+
+• <span style="color:#1170aa;">**Dark Blue**</span>: For metrics where it can be confidently stated if a higher or lower value is better, 'good' performing outliers are highlighted in dark blue.
+
+• <span style="color:#c85200;">**Orange**</span>: For metrics where it can be confidently stated if a higher or lower value is better, 'poor' performing outliers are highlighted in orange.
+
+• <span style="color:#D30000;">**Red**</span>: For metrics where a trust has not submitted data or it has failed a data quality measure, it is presented as red.
+
+Outliers are trusts who have been plotted outside the 95% control limits (or two standard deviations) on funnel plots which include all other trusts in England. The funnel plots can be viewed in the next section, which contains further information on how they have been constructed.
+
+
+`r ICB_datatable`
+
+
+\* ***For indicators with an asterisk, we have combined 3 separate months of data together to calculate an overall quarterly value. Note that if a trust did not submit data in one of these months (for instance it failed a CQIM Data Quality test) the metric has been calculated just using data from the valid months.***
+
+
+### Funnel Plots {.tabset .tabset-fade}
+
+This section of the report uses funnel plots to present data for each of the metrics included in the summary table.
+
+Funnel plots have been produced using the [FunnelPlotR function](https://nhsrcommunity.com/introduction-to-funnel-plots/#:~:text=Funnel%20plots%20are%20a%20common,and%20how%20they%20are%20constructed.).
+
+All trusts nationally have been included in the funnel plots, with trusts in `r ICB_Name` ICB highlighted. Trusts above or below the 95% confidence limits can be identified as having either a statistically significant high or low value, and may therefore require further investigation. The funnel plot has been adjusted for over-dispersion using the methodology outlined by David Spiegelhalter in ['Statistical Methods for Healthcare Regulation: Rating, Screening and Surveillance'](https://academic.oup.com/jrsssa/article/175/1/1/7077703) (2012).
+
+Please note that there are issues displaying the control limits for the Apgar Score <7 metric, which is a consequence of a large number of trusts having 0 values leading to the distribution of the data being highly skewed. With the Robson Group 1 and 5 metrics, the strange looking distribution of trusts is a consequence of this metric being based on relatively small numbers in the numerator and denominator, which are rounded to the nearest five. This means that there are only a limited range of possible values. 
+
+\* ***For indicators with an asterisk, we have combined 3 separate months of data together to calculate an overall quarterly value. Note that if a trust did not submit data in one of these months (for instance it failed a CQIM Data Quality test) the metric has been calculated just using data from the valid months.***
+
+
+```{r loop_thru_indicators, results='asis', cache=FALSE, warning=FALSE, message=FALSE, include=TRUE, echo= FALSE, tabset = TRUE, out.width= '70%'}
+
+for (i in 1:length(Indicator)) {
+  cat("#### ", Output$Indicator[i], "\n \n")
+#  cat("#### ", Indicator[i], "\n \n")
+
+  if( !is.na(MatDataLabels$Intro[i])) { cat(MatDataLabels$Intro[i]) }
+  if (i %in% c(1,2)) {cat(" ", ICB_Name, MatDataLabels$Intro2[i]) }  # first two intros referred to the ICB!
+  cat("\n \n")
+
+  funeel <- Funnel_Function(Indicator[i], ICB_filter, "95", MatDataLabels$Title[i], multiplier[i], MatDataLabels$ylab[i], MatDataLabels$xlab[i])
+  
+  
+# extra bit for the fitted line, if significant
+  xmin <- min(funeel$plot$data$denominator)
+  xmax <- max(funeel$plot$data$denominator)
+  # added text numbers
+    x1 <- round( (xmax+xmin)/2 , digits = -1)
+    x2 <- x1 * 1.1
+    ytmp1 <- exp(Alpha[i]) * x1^Beta[i]
+    ytmp2 <- exp(Alpha[i]) * x2^Beta[i]
+    y1 <- round(multiplier[i] * ytmp1 / (1 + ytmp1), digits = 1)
+    y2 <- round(multiplier[i] * ytmp2 / (1 + ytmp2), digits = 1)
+  #end of added text nu,bers
+  
+  # denominator <- seq(xmin, xmax, length.out = 11)
+  # tmp <- exp(Alpha[i]) * denominator^Beta[i] 
+  # val <- multiplier[i] * tmp / (1 + tmp)
+  # line <- data.frame(denominator, val)
+  # 
+  # toplot <- if(Beta_test[i])  {
+  #   funeel$plot + geom_line(data = line, aes(x = denominator, y = val), linetype = "dashed", colour="red", linewidth=2)
+  # } else {
+  #   funeel$plot
+  # }
+# HAVE TO HAVE just one of these  
+  #print(toplot)
+  print(funeel$plot)
+# end of extra bit  
+
+  rate_text <- if (multiplier[i] == 1000){"rate"} else {"percentage"}
+  sig_text <- if (Beta[i] > 0) {
+    paste("significantly different from zero, which means a 10% increase in numbers (x-axis) leads approximately to a ", 10*Beta[i], "% relative increase in ", rate_text, " (y axis). E.g. if x increaseses from ", x1, "to", x2, ", the fitted y value goes from", y1, "to", y2)
+  } else {
+    paste("significantly different from zero, which means a 10% increase in numbers (x-axis) leads approximately to a ", -10*Beta[i], "% relative decrease in ", rate_text, " (y axis). E.g. if x increases from ", x1, "to", x2, ", the fitted y value goes from", y1, "to", y2)
+    }
+  
+#  cat("Beta : ", Beta[i], " ", Beta_test[i], "\n \n")
+  cat("\n \n A test of outcome against volume (Spiegelhalter, 2005) gives a value of ", Beta[i], ". This is ", if (Beta_test[i]) {
+    sig_text
+      } else {
+    "not significantly different from zero."
+  }, "\n \n", sep = "")
+
+    if (i %in% c(1,2)) {cat("However, note that this value will be influenced by the fact that all trusts with suppressed values have been removed from the funnel plot, who tend to be smaller organisations. \n \n") }  # first two intros referred to the ICB!
+  
+}
+
+```
+
+```{r child = if (FALSE) c("HIE and Neonatal Charts Output.Rmd")}
+   # Above code should only be used for NENC reports, and shows locally collected HIE and neonatal mortality data
+```
+
+### Metadata
+
+The table below provides a summary of how each of the MSDS metrics included in the report have been constructed.
+
+`r MetaTable`
+
+#### Reference
+Spiegelhalter, DJ (2005) Funnel plots for comparing institutional performance, *Statist. Med.*, **24**, 1185-1202

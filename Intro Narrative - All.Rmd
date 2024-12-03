@@ -1,0 +1,43 @@
+### Introduction
+This report has been produced by the North East and Yorkshire Analytics team to provide a summary of the performance of `r ICB_Name` trusts for key maternity metrics. The report is split into three sections:
+
+1) **Summary Table**: A summary table which summarises how trusts in `r ICB_Name` are performing against each of the metrics.
+
+2) **Funnel Plots**: Funnel plots showing how `r ICB_Name` trusts compare to other trusts in England for each of the metrics.
+
+3) **Metadata**: A metadata table providing further information about how each of the metrics have been constructed.
+
+This report has been developed from the 'NENC Summary Metrics' tab which appeared in the [NHS Maternity Region Reporting Tool](https://future.nhs.uk/LocalTransformationHub/view?objectId=27173840) on FutureNHS, and in the case of North East and North Cumbria, is intended to supersede it. 
+
+The tab in the reporting tool also displayed values for the same set of metrics, however producing the report as a HTML document via the 'R' data science tool has the following benefits:
+
+• Means funnel plots can be used to identify outliers, representing a more sophisticated methodology to the one used in the Reporting Tool.
+
+• Additionally, means funnel plots (which aren't included in the Reporting Tool) can be used to visualise data. Funnel plots provide an effective means of highlighting how trusts in `r ICB_Name` compare to others nationally and of visualising outliers.
+
+• Makes it easier to do further calculations on the data (for instance, aggregating metrics up to 3 month time periods) and also incorporate in data from local sources if required at a future date.
+
+Whilst this report is intended to replace the 'NENC Summary Metrics' tab, the NHSE [Reporting Tool](https://future.nhs.uk/LocalTransformationHub/view?objectId=27173840) is still a recommended resource for exploring MSDS data in more detail, along with the NHS Digital [Maternity Services dashboard](https://digital.nhs.uk/data-and-information/data-collections-and-data-sets/data-sets/maternity-services-data-set/maternity-services-dashboard).
+
+#### Notes on Data
+All metrics in this report have been produced using the Maternity Services Data Set (MSDS). 
+
+From 2023/24 Q2 onwards we have changed the source of the stillbirth metric from the Secondary Uses Service (SUS) data set to MSDS. SUS is a national data set for recording all hospital activity in England. SUS was previously used for measuring stillbirths as the data has historically been seen as more reliable. However, due to recent improvements in MSDS data quality we have made the decision to move to this as the data source.
+
+The North East and Yorkshire analytics team have previously produced analysis comparing SUS and MSDS stillbirth rates with those reported in MBRRACE, and can share this analysis if requested.
+
+For metrics where data is published on a monthly rather than rolling 3-month basis, we have aggregated together three separate months to calculate an overall quarterly value. These metrics are marked with asterisks in both the summary table and funnel plot sections. Note that if a trust did not submit data in one of these months (for instance it failed a CQIM Data Quality test) the metric has been calculated just using data from the valid months.
+
+For both Smoking at Delivery and PPH >= 1500ml, MSDS reports on the previous month/rolling 3 months as opposed to the current reporting month. For this reason, there is a one month lag in the time period for these two metrics.
+
+Due to small numbers, stillbirths are presented as a rolling annual rate, covering up to the end of the current reporting quarter. For instance, for 2023/24 Q1 the stillbirths data will cover up to June 2023 (this being the final month of the quarter) and go back to July 2022, covering 12 months in total.
+
+Please note that metrics showing the percentage of births by delivery method (elective C-section, emergency C-section, instrumental and spontaneous) and which were induced have been sourced from the NHS Digital published MSDS Statistics from NHS Digital, and not the NHS England Maternity Transformation Programme (MTP) Region Reporting Tool.
+
+The NHS Digital definition is limited to full term, singleton live births. By contrast, the NHS England MTP data includes all birth types, but excludes any delivery which did not have a valid delivery onset or delivery method code recorded.
+
+To illustrate this with a basic example: the published data could show 33% of births as spontaneous, 33% as via C-section and 33% as missing delivery onset information. As the MTP data excludes the invalid records, this would instead show 50% of births as being spontaneous and 50% via C-section.
+
+However, analysis by the North East and Yorkshire analytics team has highlighted that delivery onset and delivery method coding in MSDS is very high, so in reality there is minimal risk of the published data giving a misleading picture.
+
+Further information on how metrics have been constructed is provided in the Metadata section of this report.
